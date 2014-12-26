@@ -1,10 +1,13 @@
 import java.io.*;
 
+import org.apache.log4j.Logger;
+
 /**
  * Created by TeSla on 25.12.2014.
  */
 public class Reader {
     private BufferedReader br = null;
+    static final Logger logger = Logger.getLogger(Reader.class.toString());
 
     void read(String fileName) {
         try {
@@ -28,11 +31,15 @@ public class Reader {
         }
     }
 
+    void print(String message) {
+        logger.info(message);
+    }
+
     void nextLine() {
         String currentString;
         try {
             if ((currentString = br.readLine()) != null) {
-                System.out.print(currentString);
+                logger.info(currentString);
             }
         } catch (IOException e) {
             e.printStackTrace();

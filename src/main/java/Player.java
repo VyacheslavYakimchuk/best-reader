@@ -7,7 +7,6 @@ public class Player {
     private String command = "";
     private Scanner scanner;
     private Reader reader;
-    private boolean canTalk = true;
 
     public Player(String fileName) {
         scanner = new Scanner(System.in);
@@ -17,6 +16,7 @@ public class Player {
     }
 
     void play() {
+        boolean canTalk = true;
         while (!command.equals("exit")) {
             command = scanner.nextLine();
             if (command.contains("changeFile")) {
@@ -25,7 +25,7 @@ public class Player {
                     reader.read(commandParts[1]);
                     reader.nextLine();
                 } catch (Exception e) {
-                    System.out.println("Specify command correctly: changeFile=[Full file path]");
+                    reader.print("Specify command correctly: changeFile=[Full file path]");
                 }
             }
             if (command.equals("stopTalking")) {
