@@ -1,5 +1,4 @@
 import org.apache.log4j.Logger;
-
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
@@ -8,32 +7,41 @@ import java.util.Scanner;
  */
 public class UserDialog {
     private String command = "";
+    private String currentMessage = "";
     private Scanner scanner;
     private FileReader fileReader;
-    static final Logger logger = Logger.getLogger(FileReader.class.toString());
+    private boolean canTalk = true;
+    private static final Logger logger = Logger.getLogger(FileReader.class.toString());
 
-    public UserDialog(String fileName) {
+    public void setFileReader(FileReader fileReader) {
+        this.fileReader = fileReader;
+    }
+
+    public void openFile(String fileName) {
         scanner = new Scanner(System.in);
-        fileReader = new FileReader();
         try {
             fileReader.openFile(fileName);
-            logger.info(fileReader.getNextLine());
-        } catch (FileNotFoundException e){
-            logger.info("Could not open file " + fileName + ". You can switch to another one or close the app.");
+            currentMessage = fileReader.getNextLine();
+        } catch (FileNotFoundException e) {
+            currentMessage = "Could not open file " + fileName + ". You can switch to another one or close the app.";
+            canTalk = false;
+        } finally {
+            logger.info(currentMessage);
         }
     }
 
     public void start() {
-        boolean canTalk = true;
         while (!command.equals("close")) {
             command = scanner.nextLine();
             if (command.contains("changeFile")) {
                 String[] commandParts = command.split("=");
                 try {
+                    fileReader.close();
                     fileReader.openFile(commandParts[1]);
-                    logger.info(fileReader.getNextLine());
+                    currentMessage = fileReader.getNextLine();
+                    canTalk = true;
                 } catch (Exception e) {
-                    logger.info("Specify command correctly: changeFile=[Full file path]");
+                    currentMessage = "Specify command correctly: changeFile=[Full file path]";
                 }
             }
             if (command.equals("stopTalking")) {
@@ -43,14 +51,16 @@ public class UserDialog {
                 canTalk = true;
             }
             if (command.equals("") && canTalk == true) {
-                if (fileReader.getNextLine() == null) {
-                    logger.info("The file was copletely readen. Choose another one.");
-                } else {
-                    logger.info(fileReader.getNextLine());
+                currentMessage = fileReader.getNextLine();
+                if (currentMessage == null) {
+                    currentMessage = "The file was copletely readen. Choose another one.";
                 }
             }
             if (command.equals("exit")) {
-                logger.info(fileReader.getLastLine());
+                currentMessage = fileReader.getLastLine();
+            }
+            if (!command.equals("close")) {
+                logger.info(currentMessage);
             }
         }
         fileReader.close();

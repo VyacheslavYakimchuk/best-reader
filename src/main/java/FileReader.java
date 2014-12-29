@@ -6,7 +6,7 @@ import java.io.*;
 public class FileReader {
     private BufferedReader br = null;
 
-    public void openFile(String fileName) throws FileNotFoundException{
+    public void openFile(String fileName) throws FileNotFoundException {
         try {
             FileInputStream fstream = new FileInputStream(fileName);
             DataInputStream in = new DataInputStream(fstream);
@@ -23,7 +23,6 @@ public class FileReader {
         } catch (IOException e) {
             throw new RuntimeException("IOException" + e);
         }
-
         return nextLine;
     }
 
@@ -35,7 +34,6 @@ public class FileReader {
                 lastLine = currentLine;
             }
         }
-
         return lastLine;
     }
 
